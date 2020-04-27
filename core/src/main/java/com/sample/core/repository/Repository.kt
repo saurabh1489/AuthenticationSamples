@@ -6,7 +6,7 @@ class Repository<T>(
     private val remoteDataSource: RemoteDataSource<T>,
     private val localDataSource: LocalDataSource<T>
 ) {
-    fun getAndCache(networkParams: NetworkParams): Single<T> {
+    fun getAndCache(networkParams: NetworkParams?): Single<T> {
         return remoteDataSource.fetch(networkParams).doOnSuccess {
             localDataSource.save(it)
         }.doOnError {

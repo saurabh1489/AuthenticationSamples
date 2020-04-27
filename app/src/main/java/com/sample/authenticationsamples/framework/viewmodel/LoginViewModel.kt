@@ -1,5 +1,6 @@
 package com.sample.authenticationsamples.framework.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.sample.authenticationsamples.BuildConfig
 import com.sample.authenticationsamples.framework.usecase.SessionUseCase
@@ -18,7 +19,7 @@ class LoginViewModel @Inject constructor(
         get() = loginState
 
     init {
-        loginState.value = sessionUseCase.getSavedSession().accessToken != null
+        loginState.value = sessionUseCase.getSavedSession(null).blockingGet().accessToken != null
         loginState.addSource(authCode) { code ->
             sessionUseCase.getNewSession(createAuthenticationNetworkParams(code))
                 .map {
@@ -33,7 +34,7 @@ class LoginViewModel @Inject constructor(
         authCode.value = code
     }
 
-    fun createAuthenticationNetworkParams(authCode: String): NetworkParams {
+    private fun createAuthenticationNetworkParams(authCode: String): NetworkParams {
         return object : NetworkParams {
             override fun getQueryParams(): Map<String, String> {
                 val params = mutableMapOf<String, String>()

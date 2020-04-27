@@ -5,11 +5,11 @@ import io.reactivex.Single
 import retrofit2.http.POST
 import retrofit2.http.Query
 
-const val GOOGLE_AUTH_ENDPOINT = "https://oauth2.googleapis.com"
+const val GOOGLE_AUTH_ENDPOINT = "https://oauth2.googleapis.com/"
 
 interface AuthenticationService {
 
-    @POST("/token")
+    @POST("token")
     fun requestAccessToken(
         @Query("client_id") clientId: String,
         @Query("code") code: String,

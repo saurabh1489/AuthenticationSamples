@@ -1,15 +1,11 @@
 package com.sample.authenticationsamples.framework.di
 
-import android.util.Log
 import com.sample.authenticationsamples.framework.network.AuthenticationService
 import com.sample.authenticationsamples.framework.network.GOOGLE_AUTH_ENDPOINT
-import com.sample.authenticationsamples.framework.usecase.SessionUseCase
+import com.sample.authenticationsamples.framework.network.GOOGLE_DRIVE_ENDPOINT
+import com.sample.authenticationsamples.framework.network.GoogleDriveService
 import com.sample.core.data.Session
-import com.sample.core.repository.LocalDataSource
-import com.sample.core.repository.RemoteDataSource
 import com.sample.core.repository.Repository
-import com.sample.core.usecase.GetNewSession
-import com.sample.core.usecase.GetSavedSession
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -20,46 +16,52 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
-@Module(includes = [ViewModelModule::class, SessionModule::class])
+@Module(includes = [ViewModelModule::class, DataSourceModule::class, UseCaseModule::class, RepositoryModule::class])
 class AppModule {
 
     @Provides
     @Singleton
     fun provideAuthenticationService(): AuthenticationService {
+        val interceptor = HttpLoggingInterceptor().apply {
+            setLevel(HttpLoggingInterceptor.Level.BODY)
+        }
+        val okHttpClient = OkHttpClient.Builder()
+            .readTimeout(10, TimeUnit.SECONDS)
+            .addInterceptor(interceptor)
+            .build()
         return Retrofit.Builder()
             .baseUrl(GOOGLE_AUTH_ENDPOINT)
-            .client(okHttpClient())
+            .client(okHttpClient)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(AuthenticationService::class.java)
     }
 
-    private fun okHttpClient(): OkHttpClient {
-        val interceptor = HttpLoggingInterceptor().run {
+    @Provides
+    @Singleton
+    fun provideGoogleDriveService(repository: Repository<Session>): GoogleDriveService {
+        val interceptor = HttpLoggingInterceptor().apply {
             setLevel(HttpLoggingInterceptor.Level.BODY)
         }
-        return OkHttpClient.Builder()
+        val okHttpClient = OkHttpClient.Builder()
             .readTimeout(10, TimeUnit.SECONDS)
             .addInterceptor(interceptor)
             .addInterceptor { chain ->
                 val request = chain.request()
-                Log.d("Awasthi", "Request=${request.body}")
+                    .newBuilder()
+                    .addHeader("Authorization", "Bearer ${repository.getCached().accessToken}")
+                    .build()
                 chain.proceed(request)
             }
             .build()
+        return Retrofit.Builder()
+            .baseUrl(GOOGLE_DRIVE_ENDPOINT)
+            .client(okHttpClient)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(GoogleDriveService::class.java)
     }
-
-    @Provides
-    fun provideUseCases(repository: Repository<Session>) = SessionUseCase(
-        GetSavedSession(repository),
-        GetNewSession(repository)
-    )
-
-    @Provides
-    fun provideSessionRepository(
-        remoteDataSource: RemoteDataSource<Session>,
-        localDataSource: LocalDataSource<Session>
-    ) = Repository(remoteDataSource, localDataSource)
 
 }

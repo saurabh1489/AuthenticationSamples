@@ -1,12 +1,13 @@
-package com.sample.authenticationsamples.framework.datasource
+package com.sample.authenticationsamples.framework.datasource.session
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.sample.core.data.Session
 import com.sample.core.repository.LocalDataSource
 import javax.inject.Inject
 
-class SessionLocalSource @Inject constructor(context: Context) :
+class SessionLocalDataSource @Inject constructor(context: Context) :
     LocalDataSource<Session> {
 
     private val prefs: SharedPreferences = context.getSharedPreferences(
