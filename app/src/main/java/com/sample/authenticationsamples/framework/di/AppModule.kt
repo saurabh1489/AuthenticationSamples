@@ -8,7 +8,7 @@ import com.sample.core.data.Session
 import com.sample.core.repository.Repository
 import dagger.Module
 import dagger.Provides
-import okhttp3.OkHttpClient
+import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -40,12 +40,27 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideGoogleDriveService(repository: Repository<Session>): GoogleDriveService {
+    fun provideGoogleDriveService(authenticationService: AuthenticationService, repository: Repository<Session>): GoogleDriveService {
         val interceptor = HttpLoggingInterceptor().apply {
             setLevel(HttpLoggingInterceptor.Level.BODY)
         }
         val okHttpClient = OkHttpClient.Builder()
             .readTimeout(10, TimeUnit.SECONDS)
+            .authenticator(object : Authenticator {
+                override fun authenticate(route: Route?, response: Response): Request? {
+                    if (response.code == 401) {
+                        repository.getCached().refreshToken?.let{
+                            val sessionResponse = authenticationService.refreshAccessToken(refreshToken = it).blockingGet()
+                            repository.save(Session(sessionResponse.accessToken, sessionResponse.refreshToken))
+                        }
+                        return response.request.newBuilder()
+                            .header("Authorization", "Bearer ${repository.getCached().accessToken}")
+                            .build();
+                    } else {
+                        return null
+                    }
+                }
+            })
             .addInterceptor(interceptor)
             .addInterceptor { chain ->
                 val request = chain.request()

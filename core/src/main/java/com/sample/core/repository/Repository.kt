@@ -17,4 +17,8 @@ class Repository<T>(
     fun getCached(): T {
         return localDataSource.get()
     }
+
+    fun save(t: T) {
+        localDataSource.save(t)
+    }
 }
