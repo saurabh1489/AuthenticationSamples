@@ -11,8 +11,8 @@ class DriveRemoteDataSource @Inject constructor(
     private val driveService: GoogleDriveService
 ) : RemoteDataSource<List<@JvmSuppressWildcards File>> {
     override fun fetch(networkParams: NetworkParams?): Single<List<File>> {
-        return driveService.getFiles().map {
-            it.toFileList()
+        return driveService.getFiles().map { it ->
+            it.fileSchemas.map { it.toFile() }.toList()
         }
     }
 }

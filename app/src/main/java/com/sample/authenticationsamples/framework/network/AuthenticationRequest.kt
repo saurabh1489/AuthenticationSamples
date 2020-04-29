@@ -13,7 +13,7 @@ class AuthenticationRequest {
         fun authCodeRequest(state: String) =
             AUTH_CODE_ENDPOINT.toHttpUrlOrNull()?.newBuilder()?.run {
                 addQueryParameter("client_id", BuildConfig.CLIENT_ID)
-                addQueryParameter("scope", "https://www.googleapis.com/auth/drive.file")
+                addQueryParameter("scope", "https://www.googleapis.com/auth/drive")
                 addQueryParameter("redirect_uri", REDIRECT_URL)
                 addQueryParameter("response_type", "code")
                 addQueryParameter(

@@ -38,7 +38,7 @@ class FileListFragment : DaggerFragment() {
     private fun observeFileList() {
         fileListViewModel.fileListLiveData.observe(viewLifecycleOwner, Observer {
             it.forEach {
-                Log.d("Awasthi", "Files : ${it.title}");
+                Log.d("Awasthi", "Files : ${it.name}");
             }
         })
     }
