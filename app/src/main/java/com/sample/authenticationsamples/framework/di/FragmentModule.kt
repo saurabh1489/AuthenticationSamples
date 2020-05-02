@@ -1,7 +1,7 @@
 package com.sample.authenticationsamples.framework.di
 
-import com.sample.authenticationsamples.ui.FileListFragment
-import com.sample.authenticationsamples.ui.LoginFragment
+import com.sample.authenticationsamples.ui.files.FileListFragment
+import com.sample.authenticationsamples.ui.login.LoginFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

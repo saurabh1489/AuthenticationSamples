@@ -3,6 +3,7 @@ package com.sample.authenticationsamples.ui
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.sample.authenticationsamples.R
+import com.sample.authenticationsamples.ui.login.LoginFragment
 import dagger.android.support.DaggerAppCompatActivity
 
 class MainActivity : DaggerAppCompatActivity() {

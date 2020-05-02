@@ -1,7 +1,7 @@
 package com.sample.authenticationsamples.framework.network
 
 import com.sample.authenticationsamples.BuildConfig
-import com.sample.authenticationsamples.ui.REDIRECT_URL
+import com.sample.authenticationsamples.ui.login.REDIRECT_URL
 import com.sample.authenticationsamples.util.Authentication
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
@@ -14,7 +14,9 @@ class AuthenticationRequest {
             AUTH_CODE_ENDPOINT.toHttpUrlOrNull()?.newBuilder()?.run {
                 addQueryParameter("client_id", BuildConfig.CLIENT_ID)
                 addQueryParameter("scope", "https://www.googleapis.com/auth/drive")
-                addQueryParameter("redirect_uri", REDIRECT_URL)
+                addQueryParameter("redirect_uri",
+                    REDIRECT_URL
+                )
                 addQueryParameter("response_type", "code")
                 addQueryParameter(
                     "code_challenge",

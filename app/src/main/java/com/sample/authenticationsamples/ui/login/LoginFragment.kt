@@ -1,4 +1,4 @@
-package com.sample.authenticationsamples.ui
+package com.sample.authenticationsamples.ui.login
 
 import android.content.Intent
 import android.net.Uri
@@ -13,6 +13,8 @@ import com.sample.authenticationsamples.R
 import com.sample.authenticationsamples.framework.network.AuthenticationRequest
 import com.sample.authenticationsamples.framework.provider.ViewModelFactory
 import com.sample.authenticationsamples.framework.viewmodel.LoginViewModel
+import com.sample.authenticationsamples.ui.MainActivity
+import com.sample.authenticationsamples.ui.files.FileListFragment
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_login.view.*
 import javax.inject.Inject

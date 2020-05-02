@@ -1,5 +1,6 @@
 package com.sample.authenticationsamples.framework.di
 
+import android.util.Log
 import com.sample.authenticationsamples.framework.network.AuthenticationService
 import com.sample.authenticationsamples.framework.network.GOOGLE_AUTH_ENDPOINT
 import com.sample.authenticationsamples.framework.network.GOOGLE_DRIVE_ENDPOINT
@@ -48,9 +49,12 @@ class AppModule {
             .readTimeout(10, TimeUnit.SECONDS)
             .authenticator(object : Authenticator {
                 override fun authenticate(route: Route?, response: Response): Request? {
+                    Log.d("Awasthi","authenticate " + response.code)
                     if (response.code == 401) {
                         repository.getCached().refreshToken?.let{
+                            Log.d("Awasthi", "refreshToken $it")
                             val sessionResponse = authenticationService.refreshAccessToken(refreshToken = it).blockingGet()
+                            Log.d("Awasthi","access token " + sessionResponse.accessToken)
                             repository.save(Session(sessionResponse.accessToken, sessionResponse.refreshToken))
                         }
                         return response.request.newBuilder()

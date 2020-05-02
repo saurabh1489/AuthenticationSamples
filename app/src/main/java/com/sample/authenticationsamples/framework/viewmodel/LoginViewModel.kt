@@ -1,10 +1,9 @@
 package com.sample.authenticationsamples.framework.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.sample.authenticationsamples.BuildConfig
 import com.sample.authenticationsamples.framework.usecase.SessionUseCase
-import com.sample.authenticationsamples.ui.REDIRECT_URL
+import com.sample.authenticationsamples.ui.login.REDIRECT_URL
 import com.sample.authenticationsamples.util.Authentication
 import com.sample.core.repository.NetworkParams
 import javax.inject.Inject
@@ -42,7 +41,8 @@ class LoginViewModel @Inject constructor(
                 params["code"] = authCode
                 params["code_verifier"] = Authentication.getCodeVerifier(cached = true)
                 params["grant_type"] = "authorization_code"
-                params["redirect_uri"] = REDIRECT_URL
+                params["redirect_uri"] =
+                    REDIRECT_URL
                 return params.toMap()
             }
         }
