@@ -1,8 +1,8 @@
 package com.sample.core.usecase
 
 import com.sample.core.repository.NetworkParams
-import io.reactivex.Single
+import io.reactivex.Flowable
 
 interface UseCase<T> {
-    operator fun invoke(networkParams: NetworkParams?): Single<T>
+    operator fun invoke(networkParams: NetworkParams?): Flowable<T>
 }

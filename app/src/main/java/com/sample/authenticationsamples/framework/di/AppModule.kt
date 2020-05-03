@@ -51,14 +51,12 @@ class AppModule {
                 override fun authenticate(route: Route?, response: Response): Request? {
                     Log.d("Awasthi","authenticate " + response.code)
                     if (response.code == 401) {
-                        repository.getCached().refreshToken?.let{
-                            Log.d("Awasthi", "refreshToken $it")
+                        repository.getCached()?.refreshToken?.let{
                             val sessionResponse = authenticationService.refreshAccessToken(refreshToken = it).blockingGet()
-                            Log.d("Awasthi","access token " + sessionResponse.accessToken)
-                            repository.save(Session(sessionResponse.accessToken, sessionResponse.refreshToken))
+                            repository.save(Session(sessionResponse.accessToken, it))
                         }
                         return response.request.newBuilder()
-                            .header("Authorization", "Bearer ${repository.getCached().accessToken}")
+                            .header("Authorization", "Bearer ${repository.getCached()?.accessToken}")
                             .build();
                     } else {
                         return null
@@ -69,7 +67,7 @@ class AppModule {
             .addInterceptor { chain ->
                 val request = chain.request()
                     .newBuilder()
-                    .addHeader("Authorization", "Bearer ${repository.getCached().accessToken}")
+                    .addHeader("Authorization", "Bearer ${repository.getCached()?.accessToken}")
                     .build()
                 chain.proceed(request)
             }

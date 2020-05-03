@@ -1,12 +1,19 @@
 package com.sample.authenticationsamples.framework.viewmodel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.sample.authenticationsamples.BuildConfig
 import com.sample.authenticationsamples.framework.usecase.SessionUseCase
 import com.sample.authenticationsamples.ui.login.REDIRECT_URL
 import com.sample.authenticationsamples.util.Authentication
 import com.sample.core.repository.NetworkParams
 import javax.inject.Inject
+import kotlin.collections.Map
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
+import kotlin.collections.toMap
 
 class LoginViewModel @Inject constructor(
     private val sessionUseCase: SessionUseCase
@@ -18,7 +25,7 @@ class LoginViewModel @Inject constructor(
         get() = loginState
 
     init {
-        loginState.value = sessionUseCase.getSavedSession(null).blockingGet().accessToken != null
+        loginState.value = sessionUseCase.getSavedSession(null).blockingFirst()?.accessToken != null
         loginState.addSource(authCode) { code ->
             sessionUseCase.getNewSession(createAuthenticationNetworkParams(code))
                 .map {
