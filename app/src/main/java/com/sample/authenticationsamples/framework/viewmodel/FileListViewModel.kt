@@ -1,20 +1,28 @@
 package com.sample.authenticationsamples.framework.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.sample.authenticationsamples.framework.usecase.DriveUseCase
+import com.sample.authenticationsamples.usecase.DriveUseCase
 import com.sample.authenticationsamples.ui.files.ViewStatus
 import com.sample.authenticationsamples.ui.files.model.ViewState
-import com.sample.authenticationsamples.util.toLiveData
 import com.sample.core.data.File
+import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
 class FileListViewModel @Inject constructor(
-    private val driveUseCase: DriveUseCase
+    driveUseCase: DriveUseCase
 ) : ViewModel() {
 
+    private val disposable = CompositeDisposable()
+    private val fileListMutableLiveData = MutableLiveData<ViewState<List<File>>>()
     val fileListLiveData: LiveData<ViewState<List<File>>>
-        get() = driveUseCase.getFiles(null)
+        get() = fileListMutableLiveData
+
+    init {
+        Log.d("Awasthi", "viewmodel get")
+        val subscription = driveUseCase.getFiles(null)
             .map {
                 ViewState(ViewStatus.SUCCESS, it)
             }
@@ -22,5 +30,13 @@ class FileListViewModel @Inject constructor(
                 ViewState(ViewStatus.ERROR)
             }
             .startWith(ViewState(ViewStatus.LOADING))
-            .toLiveData()
+            .subscribe { fileListLiveData -> fileListMutableLiveData.postValue(fileListLiveData) }
+        disposable.add(subscription)
+    }
+
+
+    override fun onCleared() {
+        super.onCleared()
+        disposable.clear()
+    }
 }

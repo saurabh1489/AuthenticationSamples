@@ -1,7 +1,7 @@
 package com.sample.authenticationsamples.framework.network
 
 import com.sample.authenticationsamples.BuildConfig
-import com.sample.authenticationsamples.framework.network.domain.ListFileResponse
+import com.sample.authenticationsamples.framework.network.vo.ListFileResponse
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Headers

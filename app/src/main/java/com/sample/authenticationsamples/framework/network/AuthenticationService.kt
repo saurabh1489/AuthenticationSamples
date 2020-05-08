@@ -1,7 +1,7 @@
 package com.sample.authenticationsamples.framework.network
 
 import com.sample.authenticationsamples.BuildConfig
-import com.sample.authenticationsamples.framework.network.domain.SessionResponse
+import com.sample.authenticationsamples.framework.network.vo.SessionResponse
 import io.reactivex.Single
 import retrofit2.http.POST
 import retrofit2.http.Query

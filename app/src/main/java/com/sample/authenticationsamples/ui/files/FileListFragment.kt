@@ -1,6 +1,7 @@
 package com.sample.authenticationsamples.ui.files
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -52,6 +53,7 @@ class FileListFragment : DaggerFragment() {
     }
 
     private fun observeFileList() {
+        Log.d("Awasthi", "viewmodel ${fileListViewModel}")
         fileListViewModel.fileListLiveData.observe(viewLifecycleOwner, Observer { viewStatus ->
             when (viewStatus.status) {
                 LOADING -> showLoading()

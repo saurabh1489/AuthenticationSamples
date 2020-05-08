@@ -1,4 +1,4 @@
-package com.sample.authenticationsamples.framework.network.domain
+package com.sample.authenticationsamples.framework.network.vo
 
 
 import com.google.gson.annotations.SerializedName

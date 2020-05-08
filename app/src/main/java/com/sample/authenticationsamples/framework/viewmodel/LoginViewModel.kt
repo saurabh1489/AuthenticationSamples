@@ -5,7 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.sample.authenticationsamples.BuildConfig
-import com.sample.authenticationsamples.framework.usecase.SessionUseCase
+import com.sample.authenticationsamples.usecase.SessionUseCase
 import com.sample.authenticationsamples.ui.login.REDIRECT_URL
 import com.sample.authenticationsamples.util.Authentication
 import com.sample.core.repository.NetworkParams

@@ -1,4 +1,4 @@
-package com.sample.authenticationsamples.framework.usecase
+package com.sample.authenticationsamples.usecase
 
 import com.sample.core.usecase.GetFiles
 

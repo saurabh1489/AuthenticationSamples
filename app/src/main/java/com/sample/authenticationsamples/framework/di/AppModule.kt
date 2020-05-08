@@ -1,6 +1,10 @@
 package com.sample.authenticationsamples.framework.di
 
+import android.content.Context
 import android.util.Log
+import androidx.room.Room
+import com.sample.authenticationsamples.framework.db.FileDb
+import com.sample.authenticationsamples.framework.db.dao.FileListDao
 import com.sample.authenticationsamples.framework.network.AuthenticationService
 import com.sample.authenticationsamples.framework.network.GOOGLE_AUTH_ENDPOINT
 import com.sample.authenticationsamples.framework.network.GOOGLE_DRIVE_ENDPOINT
@@ -41,7 +45,10 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideGoogleDriveService(authenticationService: AuthenticationService, repository: Repository<Session>): GoogleDriveService {
+    fun provideGoogleDriveService(
+        authenticationService: AuthenticationService,
+        repository: Repository<Session>
+    ): GoogleDriveService {
         val interceptor = HttpLoggingInterceptor().apply {
             setLevel(HttpLoggingInterceptor.Level.BODY)
         }
@@ -49,14 +56,19 @@ class AppModule {
             .readTimeout(10, TimeUnit.SECONDS)
             .authenticator(object : Authenticator {
                 override fun authenticate(route: Route?, response: Response): Request? {
-                    Log.d("Awasthi","authenticate " + response.code)
+                    Log.d("Awasthi", "authenticate " + response.code)
                     if (response.code == 401) {
-                        repository.getCached()?.refreshToken?.let{
-                            val sessionResponse = authenticationService.refreshAccessToken(refreshToken = it).blockingGet()
+                        repository.getCached()?.refreshToken?.let {
+                            val sessionResponse =
+                                authenticationService.refreshAccessToken(refreshToken = it)
+                                    .blockingGet()
                             repository.save(Session(sessionResponse.accessToken, it))
                         }
                         return response.request.newBuilder()
-                            .header("Authorization", "Bearer ${repository.getCached()?.accessToken}")
+                            .header(
+                                "Authorization",
+                                "Bearer ${repository.getCached()?.accessToken}"
+                            )
                             .build();
                     } else {
                         return null
@@ -79,6 +91,20 @@ class AppModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(GoogleDriveService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideFileDatabase(context: Context): FileDb {
+        return Room.databaseBuilder(context, FileDb::class.java, "GoogleFile.db")
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideFileListDao(db: FileDb): FileListDao {
+        return db.fileListDao()
     }
 
 }

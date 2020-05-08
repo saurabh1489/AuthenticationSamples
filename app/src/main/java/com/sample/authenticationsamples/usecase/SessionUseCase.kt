@@ -1,8 +1,7 @@
-package com.sample.authenticationsamples.framework.usecase
+package com.sample.authenticationsamples.usecase
 
 import com.sample.core.usecase.GetNewSession
 import com.sample.core.usecase.GetSavedSession
-import javax.inject.Inject
 
 data class SessionUseCase(
     val getSavedSession: GetSavedSession,

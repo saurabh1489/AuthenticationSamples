@@ -11,7 +11,9 @@ class MainActivity : DaggerAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        replaceFragment(LoginFragment.instance())
+        if (savedInstanceState == null) {
+            replaceFragment(LoginFragment.instance())
+        }
     }
 
     fun replaceFragment(fragment: Fragment) {

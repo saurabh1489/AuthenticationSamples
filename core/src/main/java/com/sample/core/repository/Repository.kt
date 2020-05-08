@@ -1,7 +1,9 @@
 package com.sample.core.repository
 
 import io.reactivex.Flowable
-import io.reactivex.Single
+import io.reactivex.Scheduler
+import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 class Repository<T>(
     private val remoteDataSource: RemoteDataSource<T>,
@@ -20,7 +22,7 @@ class Repository<T>(
     }
 
     fun getCached(): T? {
-        return localDataSource.get()
+        return localDataSource.get().subscribeOn(Schedulers.io()).blockingGet()
     }
 
     fun save(t: T) {
